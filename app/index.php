@@ -19,7 +19,9 @@ foreach ($GLOBALS['OFFSETS'] as $pq) {
     }
 }
 $to = array_unique($to);
-if (!count($to)) $to[] = '0,0';
+if (!count($to)) {
+    $to[] = '0,0';
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -80,8 +82,12 @@ if (!count($to)) $to[] = '0,0';
     $min_q = 1000;
     foreach ($board as $pos => $tile) {
         $pq = explode(',', $pos);
-        if ($pq[0] < $min_p) $min_p = $pq[0];
-        if ($pq[1] < $min_q) $min_q = $pq[1];
+        if ($pq[0] < $min_p) {
+            $min_p = $pq[0];
+        }
+        if ($pq[1] < $min_q) {
+            $min_q = $pq[1];
+        }
     }
     foreach (array_filter($board) as $pos => $tile) {
         $pq = explode(',', $pos);
@@ -122,7 +128,11 @@ if (!count($to)) $to[] = '0,0';
     ?>
 </div>
 <div class="turn">
-    Turn: <?php if ($player == 0) echo "White"; else echo "Black"; ?>
+    Turn: <?php if ($player == 0) {
+        echo "White";
+    } else {
+        echo "Black";
+    } ?>
 </div>
 <form method="post" action="play.php">
     <select name="piece">
@@ -164,7 +174,9 @@ if (!count($to)) $to[] = '0,0';
 <form method="post" action="restart.php">
     <input type="submit" value="Restart">
 </form>
-<strong><?php if (isset($_SESSION['error'])) echo($_SESSION['error']);
+<strong><?php if (isset($_SESSION['error'])) {
+        echo $_SESSION['error'];
+    }
     unset($_SESSION['error']); ?></strong>
 <ol>
     <?php
