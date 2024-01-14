@@ -7,6 +7,14 @@ pipeline {
                 echo 'Building..'
             }
         }
+        stage('SonarQube') {
+            steps {
+                script { scannerHome = tool 'SonarQube' }
+                withSonarQubeEnv('SonarQube') {
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sonarqubetes1"
+                }
+            }
+        }
         stage('Test') {
             steps {
                 echo 'Testing..'
