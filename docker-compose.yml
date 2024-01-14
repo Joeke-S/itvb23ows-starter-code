@@ -24,5 +24,17 @@ services:
     volumes:
       - ./database/hive.sql:/docker-entrypoint-initdb.d/hive.sql
 
+  jenkins:
+    build:
+      context: jenkins
+      dockerfile: Dockerfile
+    volumes:
+      - jenkins-data:/var/jenkins_home
+    restart: always
+    ports:
+      - '8080:8080'
+
+volumes:
+  jenkins-data:
 networks:
     app-network:
