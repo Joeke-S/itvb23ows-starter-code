@@ -23,9 +23,9 @@ DROP TABLE IF EXISTS `games`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `games` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+                         `id` int NOT NULL AUTO_INCREMENT,
+                         PRIMARY KEY (`id`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,15 +45,15 @@ DROP TABLE IF EXISTS `moves`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `moves` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `game_id` int NOT NULL,
-  `type` char(4) NOT NULL,
-  `move_from` varchar(11) DEFAULT NULL,
-  `move_to` varchar(11) DEFAULT NULL,
-  `previous_id` int DEFAULT NULL,
-  `state` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+                         `id` int NOT NULL AUTO_INCREMENT,
+                         `game_id` int NOT NULL,
+                         `type` char(4) NOT NULL,
+                         `move_from` varchar(11) DEFAULT NULL,
+                         `move_to` varchar(11) DEFAULT NULL,
+                         `previous_id` int DEFAULT NULL,
+                         `state` text,
+                         PRIMARY KEY (`id`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

@@ -1,0 +1,28 @@
+services:
+  # PHP container
+  php:
+    container_name: ontwikkelstraten_app
+    restart: always
+    build:
+      context: app
+      dockerfile: Dockerfile
+      target: base
+    ports:
+      - 8000:8000
+
+  # MySQL database service
+  app-db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: hive
+    ports:
+      - '3306:3306'
+    networks:
+      - app-network
+    volumes:
+      - ./database/hive.sql:/docker-entrypoint-initdb.d/hive.sql
+
+networks:
+    app-network:
