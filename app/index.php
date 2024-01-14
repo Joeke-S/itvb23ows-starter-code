@@ -96,7 +96,9 @@ if (!count($to)) {
         $h = count($tile);
         echo '<div class="tile player';
         echo $tile[$h - 1][0];
-        if ($h > 1) echo ' stacked';
+        if ($h > 1) {
+            echo ' stacked';
+        }
         echo '" style="left: ';
         echo ($pq[0] - $min_p) * 4 + ($pq[1] - $min_q) * 2;
         echo 'em; top: ';
