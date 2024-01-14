@@ -14,5 +14,5 @@ function setState($state)
 }
 
 function getDatabase() {
-    return new mysqli('app-db', 'root', '', 'hive');
+    return new mysqli('app-db', 'root', 'root', 'hive');
 }

@@ -1,21 +1,21 @@
 services:
   # PHP container
   php:
-    container_name: ontwikkelstraten_app
+    container_name: ontwikkelstraten-app
     restart: always
     build:
       context: app
       dockerfile: Dockerfile
-      target: base
     ports:
       - 8000:8000
 
   # MySQL database service
   app-db:
+    container_name: app-db
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: hive
     ports:
       - '3306:3306'
@@ -25,6 +25,7 @@ services:
       - ./database/hive.sql:/docker-entrypoint-initdb.d/hive.sql
 
   jenkins:
+    container_name: jenkins
     build:
       context: jenkins
       dockerfile: Dockerfile
@@ -33,8 +34,24 @@ services:
     restart: always
     ports:
       - '8080:8080'
+    networks:
+      - app-network
+
+  sonar-mf-cube:
+    container_name: sonar-mf-cube
+    image: sonarqube:latest
+    restart: always
+    volumes:
+      - sonarqube-data:/opt/sonar-mf-cube/data
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    ports:
+      - '9000:9000'
+    networks:
+      - app-network
 
 volumes:
   jenkins-data:
+  sonarqube-data:
 networks:
     app-network:
