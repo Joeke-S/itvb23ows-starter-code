@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include_once 'util.php';
+use util;
 
 if (!isset($_SESSION['board'])) {
     header('Location: restart.php');
@@ -182,7 +182,7 @@ if (!count($to)) {
     unset($_SESSION['error']); ?></strong>
 <ol>
     <?php
-    $db = include_once 'database.php';
+    $db = getDatabase();
     $stmt = $db->prepare('SELECT * FROM moves WHERE game_id = ' . $_SESSION['game_id']);
     $stmt->execute();
     $result = $stmt->get_result();
