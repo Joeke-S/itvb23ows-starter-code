@@ -46,19 +46,21 @@ function len($tile)
 
 function slide($board, $from, $to)
 {
-    if (!hasNeighBour($to, $board)) {
+    if ((!hasNeighBour($to, $board)) || (!isNeighbour($from, $to))){
         return false;
     }
-    if (!isNeighbour($from, $to)) {
-        return false;
-    }
+
     $b = explode(',', $to);
     $common = [];
     foreach ($GLOBALS['OFFSETS'] as $pq) {
         $p = $b[0] + $pq[0];
         $q = $b[1] + $pq[1];
-        if (isNeighbour($from, $p . "," . $q)) $common[] = $p . "," . $q;
+        if (isNeighbour($from, $p . "," . $q)) {
+            $common[] = $p . "," . $q;
+        }
     }
-    if (!$board[$common[0]] && !$board[$common[1]] && !$board[$from] && !$board[$to]) return false;
+    if (!$board[$common[0]] && !$board[$common[1]] && !$board[$from] && !$board[$to]) {
+        return false;
+    }
     return min(len($board[$common[0]]), len($board[$common[1]])) <= max(len($board[$from]), len($board[$to]));
 }
