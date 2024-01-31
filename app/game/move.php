@@ -14,19 +14,15 @@ unset($_SESSION['error']);
 
 if (!isset($board[$from])) {
     $_SESSION['error'] = 'Board position is empty';
-}
-elseif ($board[$from][count($board[$from]) - 1][0] != $player) {
+} elseif ($board[$from][count($board[$from]) - 1][0] != $player) {
     $_SESSION['error'] = "Tile is not owned by player";
-}
-elseif ($hand['Q']) {
+} elseif ($hand['Q']) {
     $_SESSION['error'] = "Queen bee is not played";
-}
-else {
+} else {
     $tile = array_pop($board[$from]);
     if (!hasNeighBour($to, $board)) {
         $_SESSION['error'] = "Move would split hive";
-    }
-    else {
+    } else {
         $all = array_keys($board);
         $queue = [array_shift($all)];
         while ($queue) {
@@ -46,11 +42,9 @@ else {
         } else {
             if ($from == $to) {
                 $_SESSION['error'] = 'Tile must move';
-            }
-            elseif (isset($board[$to]) && $tile[1] != "B") {
+            } elseif (isset($board[$to]) && $tile[1] != "B") {
                 $_SESSION['error'] = 'Tile not empty';
-            }
-            elseif ($tile[1] == "Q" || $tile[1] == "B") {
+            } elseif ($tile[1] == "Q" || $tile[1] == "B") {
                 if (!slide($board, $from, $to)) {
                     $_SESSION['error'] = 'Tile must slide';
                 }
@@ -60,15 +54,13 @@ else {
     if (isset($_SESSION['error'])) {
         if (isset($board[$from])) {
             array_push($board[$from], $tile);
-        }
-        else {
+        } else {
             $board[$from] = [$tile];
         }
     } else {
         if (isset($board[$to])) {
             array_push($board[$to], $tile);
-        }
-        else {
+        } else {
             $board[$to] = [$tile];
         }
         $_SESSION['player'] = 1 - $_SESSION['player'];

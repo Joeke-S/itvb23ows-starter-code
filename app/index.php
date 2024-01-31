@@ -27,53 +27,7 @@ if (!count($to)) {
 <html lang="en">
 <head>
     <title>Hive</title>
-    <style>
-        div.board {
-            width: 60%;
-            height: 100%;
-            min-height: 500px;
-            float: left;
-            overflow: scroll;
-            position: relative;
-        }
-
-        div.board div.tile {
-            position: absolute;
-        }
-
-        div.tile {
-            display: inline-block;
-            width: 4em;
-            height: 4em;
-            border: 1px solid black;
-            box-sizing: border-box;
-            font-size: 50%;
-            padding: 2px;
-        }
-
-        div.tile span {
-            display: block;
-            width: 100%;
-            text-align: center;
-            font-size: 200%;
-        }
-
-        div.player0 {
-            color: black;
-            background: white;
-        }
-
-        div.player1 {
-            color: white;
-            background: black
-        }
-
-        div.stacked {
-            border-width: 3px;
-            border-color: red;
-            padding: 0;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style/style.css">
 </head>
 <body>
 <div class="board">
@@ -136,7 +90,7 @@ if (!count($to)) {
         echo "Black";
     } ?>
 </div>
-<form method="post" action="play.php">
+<form method="post" action="game/play.php">
     <select name="piece">
         <?php
         foreach ($hand[$player] as $tile => $ct) {
@@ -153,7 +107,7 @@ if (!count($to)) {
     </select>
     <input type="submit" value="Play">
 </form>
-<form method="post" action="move.php">
+<form method="post" action="game/move.php">
     <select name="from">
         <?php
         foreach (array_keys($board) as $pos) {
@@ -170,10 +124,10 @@ if (!count($to)) {
     </select>
     <input type="submit" value="Move">
 </form>
-<form method="post" action="pass.php">
+<form method="post" action="game/pass.php">
     <input type="submit" value="Pass">
 </form>
-<form method="post" action="restart.php">
+<form method="post" action="game/restart.php">
     <input type="submit" value="Restart">
 </form>
 <strong><?php if (isset($_SESSION['error'])) {
@@ -191,7 +145,7 @@ if (!count($to)) {
     }
     ?>
 </ol>
-<form method="post" action="undo.php">
+<form method="post" action="game/undo.php">
     <input type="submit" value="Undo">
 </form>
 </body>
