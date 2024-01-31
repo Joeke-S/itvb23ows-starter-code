@@ -1,5 +1,6 @@
 <?php
 
+
 function getState()
 {
     return serialize([$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]);
@@ -13,6 +14,6 @@ function setState($state)
     $_SESSION['player'] = $c;
 }
 
-function getDatabase() {
-    return new mysqli('app-db', 'root', 'root', 'hive');
-}
+
+return new mysqli('app-db', 'root', 'root', 'hive');
+
