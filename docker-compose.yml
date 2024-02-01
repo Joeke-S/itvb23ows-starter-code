@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
+    networks:
+      - app-network
 
   # MySQL database service
   app-db:

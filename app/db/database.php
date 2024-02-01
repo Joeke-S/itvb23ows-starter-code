@@ -8,7 +8,7 @@ class Database {
     private $db;
 
     public function __construct() {
-        $this->db = new mysqli('db', 'root', '', 'hive');
+        $this->db = new mysqli('app-db', 'root', 'root', 'hive');
     }
 
     public function getcon() {
