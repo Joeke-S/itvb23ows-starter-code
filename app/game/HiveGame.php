@@ -31,6 +31,11 @@ class HiveGame
         return $this->hand;
     }
 
+    public function getHandPlayer($player)
+    {
+        return $this->hand[$player];
+    }
+
     public function getBoard()
     {
         return $this->board;

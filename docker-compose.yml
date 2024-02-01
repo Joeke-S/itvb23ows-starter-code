@@ -51,6 +51,15 @@ services:
       - '9000:9000'
     networks:
       - app-network
+  hive-ai:
+    container_name: ai
+    build:
+      context: ai
+      dockerfile: Dockerfile
+    ports:
+      - '7000:7000'
+    networks:
+      - app-network
 
 volumes:
   jenkins-data:
