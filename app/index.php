@@ -110,9 +110,14 @@ if (!count($to)) $to[] = '0,0';
 <form method="post" action="move.php">
     <select name="from">
         <?php
-        foreach (array_keys($board) as $pos) {
-            echo "<option value=\"$pos\">$pos</option>";
+        foreach (array_filter($board) as $pos => $tile){
+            $h = count($tile);
+            if($tile[$h - 1][0] == $player){
+                echo "<option value=\"$pos\">$pos</option>";
+            }
+
         }
+        
         ?>
     </select>
     <select name="to">
