@@ -2,7 +2,8 @@
 
 session_start();
 
-use util;
+
+use Main\Database;
 
 $from = $_POST['from'];
 $to = $_POST['to'];
@@ -11,6 +12,9 @@ $player = $_SESSION['player'];
 $board = $_SESSION['board'];
 $hand = $_SESSION['hand'][$player];
 unset($_SESSION['error']);
+
+$game = new HiveGame($hand, $board, $player);
+$db = new Database();
 
 if (!isset($board[$from])) {
     $_SESSION['error'] = 'Board position is empty';
@@ -51,6 +55,8 @@ if (!isset($board[$from])) {
             }
         }
     }
+
+    //savetodatabase
     if (isset($_SESSION['error'])) {
         if (isset($board[$from])) {
             array_push($board[$from], $tile);
@@ -64,10 +70,13 @@ if (!isset($board[$from])) {
             $board[$to] = [$tile];
         }
         $_SESSION['player'] = 1 - $_SESSION['player'];
-        $db = getDatabase();
-        $stmt = $db->prepare(
-            'insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "move", ?, ?, ?, ?)');
-        $stmt->bind_param('issis', $_SESSION['game_id'], $from, $to, $_SESSION['last_move'], getState());
+        $db = new DBHandeler();
+        $stmt = $db->getCon()->prepare(
+            'insert into moves (game_id, type, move_from, move_to, previous_id, state) 
+            values (?, "move", ?, ?, ?, ?)'
+        );
+        $state = $game->getState();
+        $stmt->bind_param('issis', $_SESSION['game_id'], $from, $to, $_SESSION['last_move'], $state);
         $stmt->execute();
         $_SESSION['last_move'] = $db->insert_id;
     }
