@@ -92,7 +92,9 @@ if (!count($to)) $to[] = '0,0';
     <select name="piece">
         <?php
         foreach ($hand[$player] as $tile => $ct) {
-            echo "<option value=\"$tile\">$tile</option>";
+            if ($ct > 0) {
+                echo "<option value=\"$tile\">$tile</option>";
+            }
         }
         ?>
     </select>
