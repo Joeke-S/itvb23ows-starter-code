@@ -14,7 +14,7 @@ services:
   # MySQL database service
   app-db:
     container_name: app-db
-    image: mysql:5.7
+    image: mysql:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
