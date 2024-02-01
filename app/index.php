@@ -7,6 +7,7 @@ if (!isset($_SESSION['board'])) {
     header('Location: restart.php');
     exit(0);
 }
+
 $board = $_SESSION['board'];
 $player = $_SESSION['player'];
 $hand = $_SESSION['hand'];
@@ -19,7 +20,9 @@ foreach ($GLOBALS['OFFSETS'] as $pq) {
     }
 }
 $to = array_unique($to);
-if (!count($to)) $to[] = '0,0';
+if (!count($to)) {
+    $to[] = '0,0';
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -138,12 +141,12 @@ if (!count($to)) $to[] = '0,0';
     <input type="submit" value="Restart">
 </form>
 <strong><?php if (isset($_SESSION['error'])) {
-        echo($_SESSION['error']);
+        echo $_SESSION['error'];
     }
     unset($_SESSION['error']); ?></strong>
 <ol>
     <?php
-    $db = include 'database.php';
+    $db = include_once 'database.php';
     $stmt = $db->prepare('SELECT * FROM moves WHERE game_id = ' . $_SESSION['game_id']);
     $stmt->execute();
     $result = $stmt->get_result();

@@ -46,3 +46,4 @@ class HiveGame
         return $this->player;
     }
 }
+
