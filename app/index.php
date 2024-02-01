@@ -101,7 +101,9 @@ if (!count($to)) $to[] = '0,0';
     <select name="to">
         <?php
         foreach ($to as $pos) {
-            echo "<option value=\"$pos\">$pos</option>";
+            if(!in_array($pos, $board)){
+                echo "<option value=\"$pos\">$pos</option>";
+            }
         }
         ?>
     </select>
@@ -117,7 +119,7 @@ if (!count($to)) $to[] = '0,0';
             }
 
         }
-        
+
         ?>
     </select>
     <select name="to">
