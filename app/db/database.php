@@ -1,17 +1,14 @@
 <?php
 
-namespace Main;
-
-use mysqli;
-
-class Database {
-    private $db;
-
-    public function __construct() {
-        $this->db = new mysqli('app-db', 'root', 'root', 'hive');
-    }
-
-    public function getcon() {
-        return $this->db;
-    }
+function getState() {
+    return serialize([$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]);
 }
+
+function setState($state) {
+    list($a, $b, $c) = unserialize($state);
+    $_SESSION['hand'] = $a;
+    $_SESSION['board'] = $b;
+    $_SESSION['player'] = $c;
+}
+
+return new mysqli('app-db', 'root', 'root', 'hive');
