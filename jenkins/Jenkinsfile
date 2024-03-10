@@ -4,13 +4,14 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                echo 'Building...'
             }
         }
         stage('Test') {
             steps {
                 script {
-                    sh 'vendor/bin/phpunit app/tests/.'
+                    echo 'Testing...'
+                    sh '/var/www/html/vendor/bin/phpunit /var/www/html/tests'
                 }
             }
         }
@@ -24,7 +25,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                echo 'Deploying...'
             }
         }
     }
