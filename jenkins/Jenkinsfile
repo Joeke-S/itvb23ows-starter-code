@@ -6,14 +6,13 @@ pipeline {
             steps {
                 echo 'Building..'
             }
-
+        }
         stage('Test') {
             steps {
                 echo 'Testing..'
 
             }
         }
-                }
         stage('SonarQube') {
             steps {
                 script { scannerHome = tool 'Sonar Scanner' }
