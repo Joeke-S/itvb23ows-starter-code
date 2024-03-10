@@ -9,8 +9,9 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Testing..'
-
+                script {
+                    sh 'vendor/bin/phpunit app/tests/.'
+                }
             }
         }
         stage('SonarQube') {
