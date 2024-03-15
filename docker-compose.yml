@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
+    volumes:
+      - app:/var/www/html
     networks:
       - app-network
 
@@ -24,6 +26,7 @@ services:
     networks:
       - app-network
     volumes:
+      - app:/var/www/html
       - ./database/hive.sql:/docker-entrypoint-initdb.d/hive.sql
 
   jenkins:
@@ -32,6 +35,7 @@ services:
       context: jenkins
       dockerfile: Dockerfile
     volumes:
+      - app:/var/www/html
       - jenkins-data:/var/jenkins_home
     restart: always
     ports:
@@ -62,6 +66,7 @@ services:
       - app-network
 
 volumes:
+  app:
   jenkins-data:
   sonarqube-data:
 networks:
