@@ -11,6 +11,7 @@ pipeline {
             steps {
                 script {
                     echo 'Testing...'
+                    sh 'composer install'
                     sh '/var/www/html/vendor/bin/phpunit /var/www/html/tests'
                 }
             }
