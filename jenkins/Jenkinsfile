@@ -9,9 +9,9 @@ pipeline {
         }
         stage('Test') {
             steps {
+                sh 'composer install'
                 script {
                     echo 'Testing...'
-                    sh 'composer install'
                     sh '/var/www/html/vendor/bin/phpunit /var/www/html/tests'
                 }
             }
