@@ -7,9 +7,14 @@ pipeline {
                 echo 'Building...'
             }
         }
+         stage('Install dependencies') {
+                    steps {
+                        sh 'composer install'
+                        sh 'composer install phpunit'
+                    }
+                }
         stage('Test') {
             steps {
-                sh 'composer install'
                 script {
                     echo 'Testing...'
                     sh '/var/www/html/vendor/bin/phpunit /var/www/html/tests'
