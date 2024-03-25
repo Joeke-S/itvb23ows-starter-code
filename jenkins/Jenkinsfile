@@ -10,7 +10,7 @@ pipeline {
          stage('Install dependencies') {
                     steps {
                         sh 'composer install'
-                        sh 'composer install phpunit'
+                        sh 'composer require phpunit'
                     }
                 }
         stage('Test') {
