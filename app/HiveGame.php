@@ -1,34 +1,48 @@
 <?php
+namespace app;
+
 include_once 'util.php';
+
+require_once 'db/database.php';
+include_once 'Player.php';
 
 class HiveGame
 {
     private $hand = [];
     private $board = [];
-    private $player = [];
+    private $player = 0;
+
+    private Player $currentPlayer;
+    private Player $playerOne;
+    private Player $playerTwo;
     private $game_id = 0;
     private $pieceMovesTo = [];
-    private $db;
+    private Database $db;
 
-    function __construct()
+    function __construct($database)
     {
+        $this->db = $database;
         if (!isset($_SESSION['board'])) {
             $_SESSION['board'] = [];
             $_SESSION['hand'] = [0 => ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3], 1 => ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3]];
             $_SESSION['player'] = 0;
             $_SESSION['game_id'] = $this->createGame();
+            $_SESSION['last_move'] = null;
         }
+        $this->playerOne = new Player("pOne");
+        $this->playerTwo = new Player("pTwo");
+
+
         $this->board = $_SESSION['board'];
         $this->player = $_SESSION['player'];
         $this->hand = $_SESSION['hand'];
         $this->game_id = $_SESSION['game_id'];
         $this->pieceMovesTo = $this->setPieceMovesTo();
+        $this->db = new Database();
     }
 
     private function createGame(){
-        $this->db = include_once 'db/database.php';
-        $this->db->prepare('INSERT INTO games VALUES ()')->execute();
-        return $this->db->insert_id;
+        return $this->db->game();
     }
 
     private function setPieceMovesTo(){
@@ -45,19 +59,19 @@ class HiveGame
         }
         return $to;
     }
-    public function setState($state)
+    public function setState($state): void
     {
         list($hand, $board, $player) = unserialize($state);
         $this->hand = $hand;
         $this->board = $board;
         $this->player = $player;
     }
-    public function getHand()
+    public function getHand(): array
     {
         return $this->hand;
     }
 
-    public function getBoard()
+    public function getBoard(): array
     {
         return $this->board;
     }
@@ -77,13 +91,12 @@ class HiveGame
     }
 
 
-    public function getHandPlayer($player)
+    public function getHandPlayer($player): array
     {
         return $this->hand[$player];
     }
-    public function move()
+    public function move(): void
     {
-        session_start();
 
 
         $from = $_POST['from'];
@@ -93,6 +106,7 @@ class HiveGame
         $board = $_SESSION['board'];
         $hand = $_SESSION['hand'][$player];
         unset($_SESSION['error']);
+
 
         if (!isset($board[$from])) {
             $_SESSION['error'] = 'Board position is empty';
@@ -150,13 +164,9 @@ class HiveGame
                         $board[$to] = [$tile];
                     }
                     $_SESSION['player'] = 1 - $_SESSION['player'];
-                    $db = include_once 'db/database.php';
-                    $stmt = $db->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) 
-                                   values (?, "move", ?, ?, ?, ?)');
-                    $string = serialize([$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]);
-                    $stmt->bind_param('issis', $_SESSION['game_id'], $from, $to, $_SESSION['last_move'], $string);
-                    $stmt->execute();
-                    $_SESSION['last_move'] = $db->insert_id;
+                    $result = $this->db->move($_SESSION['game_id'], $from, $to, $_SESSION['last_move'], [$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]);
+
+                    $_SESSION['last_move'] = $result;
                 }
                 $_SESSION['board'] = $board;
             }
@@ -165,83 +175,77 @@ class HiveGame
         }
 
     }
-    public function pass()
+    public function pass(): void
     {
-        session_start();
 
-        $db = include_once 'db/database.php';
-        $stmt = $db->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) 
-                    values (?, "pass", null, null, ?, ?)');
-        $string = serialize([$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]);
-        $stmt->bind_param('iis', $_SESSION['game_id'], $_SESSION['last_move'], $string);
-        $stmt->execute();
-        $_SESSION['last_move'] = $db->insert_id;
+
+        $result = $this->db->move(
+            $_SESSION['game_id'],
+            null, null,
+            $_SESSION['last_move'],
+            [$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]
+        );
+
+        $_SESSION['last_move'] = $result;
         $_SESSION['player'] = 1 - $_SESSION['player'];
 
     }
 
-    public function play()
+    public function play(): void
     {
-        session_start();
-
-
         $piece = $_POST['piece'];
         $to = $_POST['to'];
-
         $player = $_SESSION['player'];
         $board = $_SESSION['board'];
         $hand = $_SESSION['hand'][$player];
 
         if (!$hand[$piece]) {
             $_SESSION['error'] = "Player does not have tile";
+            return;
         }
-        elseif (isset($board[$to])) {
+        if (isset($board[$to])) {
             $_SESSION['error'] = 'Board position is not empty';
+            return;
         }
-        elseif (count($board) && !hasNeighBour($to, $board)) {
+        if (count($board) && !hasNeighBour($to, $board)) {
             $_SESSION['error'] = "board position has no neighbour";
+            return;
         }
-        elseif (array_sum($hand) < 11 && !neighboursAreSameColor($player, $to, $board)) {
+        if (array_sum($hand) < 11 && !neighboursAreSameColor($player, $to, $board)) {
             $_SESSION['error'] = "Board position has opposing neighbour";
+            return;
         }
-        elseif (array_sum($hand) <= 8 && $hand['Q']) {
+        if (array_sum($hand) <= 8 && $hand['Q']) {
             $_SESSION['error'] = 'Must play queen bee';
-        } else {
-            $_SESSION['board'][$to] = [[$_SESSION['player'], $piece]];
-            $_SESSION['hand'][$player][$piece]--;
-            $_SESSION['player'] = 1 - $_SESSION['player'];
-            $db = include_once 'db/database.php';
-            $stmt = $db->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) 
-                            values (?, "play", ?, ?, ?, ?)');
-            $string = serialize([$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]);
-            $stmt->bind_param('issis', $_SESSION['game_id'], $piece, $to, $_SESSION['last_move'], $string);
-            $stmt->execute();
-            $_SESSION['last_move'] = $db->insert_id;
+            return;
         }
+        $_SESSION['board'][$to] = [[$_SESSION['player'], $piece]];
+        $_SESSION['hand'][$player][$piece]--;
+        $_SESSION['player'] = 1 - $_SESSION['player'];
+
+        $result = $this->db->move($_SESSION['game_id'], $piece, $to, $_SESSION['last_move'], [$_SESSION['hand'], $_SESSION['board'], $_SESSION['player']]);
+
+        $_SESSION['last_move'] = $result;
+
 
     }
-    public function restart()
+    public function restart(): void
     {
-        session_start();
-
         $_SESSION['board'] = [];
-        $_SESSION['hand'] = [0 => ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3], 1 =>
-            ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3]];
+        $_SESSION['hand'] = [
+            0 => ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3],
+            1 => ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3]
+        ];
         $_SESSION['player'] = 0;
+        $_SESSION['last_move'] = null;
 
-        $db = include_once 'db/database.php';
-        $db->prepare('INSERT INTO games VALUES ()')->execute();
-        $_SESSION['game_id'] = $db->insert_id;
-
+        $result = $this->db->game();
+        $_SESSION['game_id'] = $result;
     }
-    public function undo()
+    public function undo(): void
     {
-        session_start();
+        $result = $this->db->lastMove($_SESSION['last_move']);
 
-        $db = include_once 'db/database.php';
-        $stmt = $db->prepare('SELECT * FROM moves WHERE id = '.$_SESSION['last_move']);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_array();
         $_SESSION['last_move'] = $result[5];
         setState($result[6]);
     }

@@ -2,7 +2,6 @@ FROM jenkins/jenkins:lts
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN  jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
-
 USER root
 
 RUN apt-get update \
@@ -11,8 +10,6 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Switch back to the Jenkins user
-# Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 

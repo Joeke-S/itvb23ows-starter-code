@@ -1,18 +1,23 @@
 <?php
-    session_start();
 
-    include_once 'util.php';
-    include_once 'HiveGame.php';
-    include_once 'GamePrinter.php';
+namespace app;
 
-    $game = new HiveGame();
+session_start();
 
-    $gamePrinter = new GamePrinter($game);
+include_once 'util.php';
+include_once 'HiveGame.php';
+include_once 'GamePrinter.php';
+include_once 'db/database.php';
 
-    $WHITE = 0;
-    $BLACK = 1;
+$database = new Database();
+$game = new HiveGame($database);
 
-    $to = $game->getMovesTo();
+$gamePrinter = new GamePrinter($game);
+
+$WHITE = 0;
+$BLACK = 1;
+
+$to = $game->getMovesTo();
 
 
 ?>

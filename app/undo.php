@@ -1,8 +1,11 @@
 <?php
+namespace app;
 
 include_once 'HiveGame.php';
+include_once 'db/database.php';
 
-$game = new HiveGame();
+$database = new Database();
+$game = new HiveGame($database);
 
 $game->undo();
 header('Location: index.php');
