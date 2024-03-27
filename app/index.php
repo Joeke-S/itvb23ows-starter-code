@@ -9,8 +9,14 @@ include_once 'HiveGame.php';
 include_once 'GamePrinter.php';
 include_once 'db/database.php';
 
+if (!isset($_SESSION['board'])) {
+    header('Location: restart.php');
+    exit;
+}
+
+
 $database = new Database();
-$game = new HiveGame($database);
+$game = HiveGame::fromSession($database, $_SESSION);
 
 $gamePrinter = new GamePrinter($game);
 

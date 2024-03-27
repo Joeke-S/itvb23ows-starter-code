@@ -6,7 +6,7 @@ class GamePrinter
 {
 
     private $db;
-    private $game;
+    private HiveGame $game;
 
     public function __construct($game)
     {
@@ -24,7 +24,7 @@ class GamePrinter
     }
 
     public function printHand($player){
-        foreach ($this->game->getHand()[$player] as $tile => $ct) {
+        foreach ($this->game->getHands()[$player]->gethand() as $tile => $ct) {
             for ($i = 0; $i < $ct; $i++) {
                 echo '<div class="tile player'.$player.'"><span>'.$tile."</span></div> ";
             }
@@ -34,7 +34,7 @@ class GamePrinter
     public function printBoard(){
         $min_p = 1000;
         $min_q = 1000;
-        foreach ($this->game->getBoard() as $pos => $tile) {
+        foreach ($this->game->getBoard()->getBoard() as $pos => $tile) {
             $pq = explode(',', $pos);
             if ($pq[0] < $min_p) {
                 $min_p = $pq[0];
@@ -43,7 +43,7 @@ class GamePrinter
                 $min_q = $pq[1];
             }
         }
-        foreach (array_filter($this->game->getBoard()) as $pos => $tile) {
+        foreach (array_filter($this->game->getBoard()->getBoard()) as $pos => $tile) {
             $pq = explode(',', $pos);
             $pq[0];
             $pq[1];
@@ -68,7 +68,7 @@ class GamePrinter
     }
 
     public function printMoveFrom(){
-        foreach (array_filter($this->game->getBoard()) as $pos => $tile) {
+        foreach (array_filter($this->game->getBoard()->getBoard()) as $pos => $tile) {
             $h = count($tile);
             if ($tile[$h-1][0] == $this->game->getPlayer()){
                 echo "<option value=\"$pos\">$pos</option>";
@@ -81,14 +81,14 @@ class GamePrinter
             if (empty($this->game->getBoard())){
                 echo "<option value=\"$pos\">$pos</option>";
             }
-            elseif(!in_array($pos, $this->game->getBoard())) {
+            elseif(!in_array($pos, $this->game->getBoard()->getBoard())) {
                 echo "<option value=\"$pos\">$pos</option>";
             }
         }
     }
 
     public function printPiecesAvailable(){
-        foreach ($this->game->getHand()[$this->game->getPlayer()] as $tile => $ct) {
+        foreach ($this->game->getHandPlayer($this->game->getPlayer())->getHand() as $tile => $ct) {
             if ($ct > 0) {
                 echo "<option value=\"$tile\">$tile</option>";
             }
