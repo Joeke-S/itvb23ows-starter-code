@@ -18,7 +18,7 @@ class Board
     {
         $this->board = $board;
     }
-    public function getBoard(): array
+    public function toArray(): array
     {
         return $this->board;
     }

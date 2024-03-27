@@ -16,7 +16,7 @@ unset($_SESSION['error']);
 
 try {
     $moveId = $game->play($piece, $to);
-    $_SESSION['board'] = $game->getBoard()->getBoard();
+    $_SESSION['board'] = $game->getBoard()->toArray();
     $_SESSION['player'] = $game->getOtherPlayer();
     $_SESSION['last_move'] = $moveId;
     $_SESSION['hand'] = array_map(function (PlayerHand $hand) {

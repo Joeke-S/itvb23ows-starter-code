@@ -34,7 +34,7 @@ class GamePrinter
     public function printBoard(){
         $min_p = 1000;
         $min_q = 1000;
-        foreach ($this->game->getBoard()->getBoard() as $pos => $tile) {
+        foreach ($this->game->getBoard()->toArray() as $pos => $tile) {
             $pq = explode(',', $pos);
             if ($pq[0] < $min_p) {
                 $min_p = $pq[0];
@@ -43,7 +43,7 @@ class GamePrinter
                 $min_q = $pq[1];
             }
         }
-        foreach (array_filter($this->game->getBoard()->getBoard()) as $pos => $tile) {
+        foreach (array_filter($this->game->getBoard()->toArray()) as $pos => $tile) {
             $pq = explode(',', $pos);
             $pq[0];
             $pq[1];
@@ -68,7 +68,7 @@ class GamePrinter
     }
 
     public function printMoveFrom(){
-        foreach (array_filter($this->game->getBoard()->getBoard()) as $pos => $tile) {
+        foreach (array_filter($this->game->getBoard()->toArray()) as $pos => $tile) {
             $h = count($tile);
             if ($tile[$h-1][0] == $this->game->getPlayer()){
                 echo "<option value=\"$pos\">$pos</option>";
@@ -81,7 +81,7 @@ class GamePrinter
             if (empty($this->game->getBoard())){
                 echo "<option value=\"$pos\">$pos</option>";
             }
-            elseif(!in_array($pos, $this->game->getBoard()->getBoard())) {
+            elseif(!in_array($pos, $this->game->getBoard()->toArray())) {
                 echo "<option value=\"$pos\">$pos</option>";
             }
         }

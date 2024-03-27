@@ -9,7 +9,7 @@ include_once 'PlayerHand.php';
 $database = new Database();
 $game = new HiveGame($database);
 
-$_SESSION['board'] = $game->getBoard()->getBoard();
+$_SESSION['board'] = $game->getBoard()->toArray();
 $_SESSION['hand'] = array_map(function (PlayerHand $hand) {
     return $hand->getHand();
 }, $game->getHands());

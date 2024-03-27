@@ -19,7 +19,7 @@ try {
 
     $_SESSION['player'] = $game->getOtherPlayer();
     $_SESSION['last_move'] = $moveId;
-    $_SESSION['board'] = $board->getBoard();
+    $_SESSION['board'] = $board->toArray();
     $_SESSION['hand'] = array_map(function (PlayerHand $hand) {
         return $hand->getHand();
     }, $game->getHands());

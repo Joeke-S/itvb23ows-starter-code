@@ -67,7 +67,7 @@ class HiveGame
     {
         $to = [];
         foreach ($GLOBALS['OFFSETS'] as $pq) {
-            foreach (array_keys($this->board->getBoard()) as $pos) {
+            foreach (array_keys($this->board->toArray()) as $pos) {
                 $pq2 = explode(',', $pos);
                 $to[] = ($pq[0] + $pq2[0]) . ',' . ($pq[1] + $pq2[1]);
             }
@@ -79,13 +79,13 @@ class HiveGame
         return $to;
     }
 
-//    public function setState($state): void
-//    {
-//        list($hands, $board, $player) = unserialize($state);
-//        $this->hands = $hands;
-//        $this->board = $board;
-//        $this->player = $player;
-//    }
+    public function setState($state): void
+    {
+        list($hands, $board, $player) = unserialize($state);
+        $this->hands = $hands;
+        $this->board = $board;
+        $this->player = $player;
+    }
 
     public function getHands(): array
     {
@@ -247,7 +247,7 @@ class HiveGame
             return $hand->getHand();
         }, $this->getHands());
 
-        return serialize([$hands, $this->getBoard()->getBoard(), $this->getPlayer()]);
+        return serialize([$hands, $this->getBoard()->toArray(), $this->getPlayer()]);
     }
     public function checkPlayRules($to): void
     {
