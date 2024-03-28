@@ -19,14 +19,41 @@ class Player
 
     private int $moveCount;
 
-    public function __construct(string $name)
+    public function __construct(string $name, array $pieces = null)
     {
-        $this->pieces = self::starterPieces($this);
+        if ($pieces){
+            $this->createHand($pieces);
+        } else {
+            $this->pieces = self::starterPieces($this);
+        }
         $this->name = $name;
         $this->moveCount = 0;
     }
 
-    private static function starterPieces(Player $player): array
+    private function createHand(array $pieces)
+    {
+        foreach($pieces as $piece) {
+            switch ($piece) {
+                case 'Q':
+                    $this->pieces[] = new Queen($this);
+                    break;
+                case 'B':
+                    $this->pieces[] = new Beetle($this);
+                    break;
+                case 'S':
+                    $this->pieces[] = new Spider($this);
+                    break;
+                case 'A':
+                    $this->pieces[] = new Ant($this);
+                    break;
+                case 'G':
+                    $this->pieces[] = new Grasshopper($this);
+                    break;
+            }
+        }
+    }
+
+    private function starterPieces(Player $player): array
     {
         return array(
             new Queen($player),
@@ -43,14 +70,14 @@ class Player
         );
     }
 
-    public function getPieces(): array
+    public function getHand(): array
     {
         return $this->pieces;
     }
 
     public function pullPiece($pieceString): ?Insect
     {
-        $tiles = $this->getPieces();
+        $tiles = $this->getHand();
 
         for ($i = 0; $i < count($tiles); $i++) {
             $piece = $tiles[$i];
@@ -69,7 +96,7 @@ class Player
 
     public function hasQueenInHand(): bool
     {
-        foreach ($this->getPieces() as $piece) {
+        foreach ($this->getHand() as $piece) {
             if ($piece::class == Queen::class) {
                 return true;
             }
@@ -91,6 +118,22 @@ class Player
     public function getMoveCount(): int
     {
         return $this->moveCount;
+    }
+    public function getHandNames(): array
+    {
+        $handArray = array();
+        foreach ($this->pieces as $piece){
+            $handArray[] = $piece->getToken();
+        }
+        return $handArray;
+    }
+    public function removeInsect($type){
+        foreach ($this->pieces as $key => $insect){
+            if($insect->getToken() == $type){
+                unset($this->pieces[$key]);
+                return;
+            }
+        }
     }
 
     public function setMoveCount(int $moveCount): void

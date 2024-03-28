@@ -15,11 +15,6 @@ class PlayerHand
         $this->hand = $hand;
     }
 
-    public function getPieces():array
-    {
-        return array_filter($this->hand);
-    }
-
     public function playedPieces(): array
     {
         $piecesUsed = [];

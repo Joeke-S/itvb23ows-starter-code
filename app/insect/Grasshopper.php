@@ -10,7 +10,6 @@ class Grasshopper extends Insect
     {
         return "G";
     }
-
     public function possibleMoves($board, Player $player, $x, $y): array
     {
         $pos = [];
