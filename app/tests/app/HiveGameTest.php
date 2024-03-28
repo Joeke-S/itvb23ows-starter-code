@@ -14,10 +14,7 @@ final class HiveGameTest extends TestCase
         $game = new HiveGame($database);
 
         $this->assertSame(
-
             ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3],
-
-
             $game->getHandPlayer(0)->getHand()
         );
 

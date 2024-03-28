@@ -15,6 +15,23 @@ class PlayerHand
         $this->hand = $hand;
     }
 
+    public function getPieces():array
+    {
+        return array_filter($this->hand);
+    }
+
+    public function playedPieces(): array
+    {
+        $piecesUsed = [];
+        foreach ($this->hand as $p => $count){
+            $countUsed = self::$DEFAULT_HAND[$p]-$count;
+            if ($countUsed > 0) {
+                $piecesUsed[$p] = $countUsed;
+            }
+        }
+        return $piecesUsed;
+    }
+
     public function hasPiece(string $piece): bool
     {
         return $this->hand[$piece] > 0;

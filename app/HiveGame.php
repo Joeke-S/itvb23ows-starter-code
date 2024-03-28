@@ -21,7 +21,7 @@ class HiveGame
     private Database $db;
 
     function __construct(Database $database, Board $board = null, int $gameId = null, int $player = 0, array $hands = null,
-                         int $lastMove = null)
+                         int      $lastMove = null)
     {
         $this->player = $player;
         $this->lastMove = $lastMove ?? null;
@@ -33,12 +33,13 @@ class HiveGame
         $this->lastMove = null;
     }
 
+
     public static function fromSession($database, array $session): HiveGame
     {
         $hands = null;
 
         if (isset($session['hand'])) {
-            $hands = array_map(function(array $hand) use ($database) {
+            $hands = array_map(function (array $hand) use ($database) {
                 return new PlayerHand($hand);
             }, $session['hand']);
         }
@@ -63,13 +64,39 @@ class HiveGame
         return $this->db->game();
     }
 
+    public function getValidMoveOptions()
+    {
+        $to = [];
+        foreach (Board::$OFFSETS as $pq) {
+            $positions = array_keys($this->board->toArray());
+            foreach ($positions as $pos) {
+                $pq2 = explode(',', $pos);
+                $result = ($pq[0] + $pq2[0]) . ',' . ($pq[1] + $pq2[1]);
+                $to[] = $result;
+            }
+        }
+        $to = array_unique($to);
+        if (!count($to)) {
+            $to[] = '0,0';
+        }
+
+        return $to;
+
+    }
+
     private function setPieceMovesTo()
     {
         $to = [];
         foreach ($GLOBALS['OFFSETS'] as $pq) {
             foreach (array_keys($this->board->toArray()) as $pos) {
                 $pq2 = explode(',', $pos);
-                $to[] = ($pq[0] + $pq2[0]) . ',' . ($pq[1] + $pq2[1]);
+                $res = ($pq[0] + $pq2[0]) . ',' . ($pq[1] + $pq2[1]);
+                try {
+                    $this->checkRules($res);
+                } catch (GameException) {
+                    continue;
+                }
+                $to[] = $res;
             }
         }
         $to = array_unique($to);
@@ -78,6 +105,7 @@ class HiveGame
         }
         return $to;
     }
+
 
     public function setState($state): void
     {
@@ -154,8 +182,8 @@ class HiveGame
             $next = explode(',', array_shift($queue));
             foreach (Board::$OFFSETS as $pq) {
                 list($p, $q) = $pq;
-                $p .= $next[0];
-                $q .= $next[1];
+                $p += $next[0];
+                $q += $next[1];
                 if (in_array("$p,$q", $all)) {
                     $queue[] = "$p,$q";
                     $all = array_diff($all, ["$p,$q"]);
@@ -190,6 +218,7 @@ class HiveGame
             $this->checkDestination($from, $to, $tile[1]);
 
             $this->moveTile($to, $tile);
+
         } catch (GameException $e) {
             if ($tile) {
                 if (!$this->board->emptyTile($from)) {
@@ -197,20 +226,14 @@ class HiveGame
                 } else {
                     $this->board->setTile($from, $tile[1], $tile[0]);
                 }
-                $this->moveTile($from, $tile);
             }
-
             throw $e;
         }
-
         return $this->db->move($this->game_id, $from, $to, $this->lastMove, $this->getState());
-
     }
 
     public function pass(): void
     {
-
-
         $result = $this->db->move(
             $_SESSION['game_id'],
             null, null,
@@ -220,7 +243,6 @@ class HiveGame
 
         $_SESSION['last_move'] = $result;
         $_SESSION['player'] = $this->getOtherPlayer();
-
     }
 
 
@@ -231,16 +253,17 @@ class HiveGame
         if (!$hand->hasPiece($piece)) {
             throw new GameException("Player does not have tile");
         }
-        if ($hand->sum() <= 8 && $hand['Q']) {
+        if ($hand->sum() <= 8 && $piece != 'Q' && $hand->hasPiece('Q')) {
             throw new GameException('Must play queen bee');
         }
-        $this->checkPlayRules($to);
+        $this->checkRules($to);
 
-        $this->board->setTile($to, $piece, $this->getPlayer());
+        $this->getBoard()->setTile($to, $piece, $this->getPlayer());
         $this->getHandPlayer($this->player)->removePiece($piece);
 
         return $this->db->move($this->game_id, $piece, $to, $this->lastMove, $this->getState());
     }
+
     public function getState()
     {
         $hands = array_map(function (PlayerHand $hand) {
@@ -249,17 +272,20 @@ class HiveGame
 
         return serialize([$hands, $this->getBoard()->toArray(), $this->getPlayer()]);
     }
-    public function checkPlayRules($to): void
+
+    public function checkRules($to): void
     {
         if (!$this->board->emptyTile($to)) {
             throw new GameException('Board position is not empty');
         } elseif ($this->board->boardCount() && !$this->board->hasNeighBour($to)) {
             throw new GameException("board position has no neighbour");
         } elseif ($this->getHandPlayer($this->getPlayer())->sum() < 11 && !$this->board->neighboursAreSameColor($this->getPlayer(), $to)) {
-            throw new GameException("Board position has opposing neighbour");
+            $piecesPlayed = $this->getHandPlayer($this->player)->playedPieces();
+            if (count($piecesPlayed) > 1) {
+                throw new GameException("Board position has opposing neighbour");
+            }
         }
     }
-
 
 
     public function undo()

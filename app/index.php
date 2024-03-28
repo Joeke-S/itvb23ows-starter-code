@@ -79,13 +79,13 @@ $to = $game->getMovesTo();
 <form method="post" action="move.php">
     <select name="from">
         <?php
-            $gamePrinter->printMoveFrom();
+            $gamePrinter->printMoveFrom($game);
 
         ?>
     </select>
     <select name="to">
         <?php
-            $gamePrinter->printMoveTo();
+            $gamePrinter->printMoveTo($game);
         ?>
     </select>
     <input type="submit" value="Move">

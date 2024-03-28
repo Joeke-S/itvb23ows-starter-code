@@ -61,18 +61,15 @@ class GamePrinter
         }
     }
 
-    public function printMoveTo(){
-        foreach ($this->game->getMovesTo() as $pos) {
+    public function printMoveTo(HiveGame $game){
+        foreach ($game->getValidMoveOptions() as $pos) {
             echo "<option value=\"$pos\">$pos</option>";
         }
     }
 
-    public function printMoveFrom(){
-        foreach (array_filter($this->game->getBoard()->toArray()) as $pos => $tile) {
-            $h = count($tile);
-            if ($tile[$h-1][0] == $this->game->getPlayer()){
-                echo "<option value=\"$pos\">$pos</option>";
-            }
+    public function printMoveFrom(HiveGame $game){
+        foreach($game->getBoard()->getPlayedTiles($game->getPlayer()) as $pos){
+            echo "<option value=\"$pos\">$pos</option>";
         }
     }
 

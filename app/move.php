@@ -7,6 +7,7 @@ include_once 'db/database.php';
 
 $database = new Database();
 $game = HiveGame::fromSession($database, $_SESSION);
+
 $from = $_POST['from'];
 $to = $_POST['to'];
 
@@ -23,7 +24,7 @@ try {
     $_SESSION['hand'] = array_map(function (PlayerHand $hand) {
         return $hand->getHand();
     }, $game->getHands());
-} catch (Exception $e) {
+} catch (GameException $e) {
     $_SESSION['error'] = $e->getMessage();
 } finally {
     header('Location: index.php');

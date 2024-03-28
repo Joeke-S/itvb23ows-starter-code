@@ -22,6 +22,7 @@ class Board
     {
         return $this->board;
     }
+
     public function getLastTile($pos)
     {
         return end($this->board[$pos]);
@@ -32,7 +33,7 @@ class Board
         return array_keys($this->board);
     }
 
-    public function getPlayerTiles(int $player): array
+    public function getPlayedTiles(int $player): array
     {
         $tiles = array_filter($this->board, function ($value) use ($player) {
             return is_array($value) && isset($value[0]) && is_array($value[0]) && $value[0][0] == $player;
@@ -70,13 +71,11 @@ class Board
     {
         $a = explode(',', $a);
         $b = explode(',', $b);
-        if ($a[0] == $b[0] && abs($a[1] - $b[1]) == 1) {
-            return true;
-        }
-        if ($a[1] == $b[1] && abs($a[0] - $b[0]) == 1) {
-            return true;
-        }
-        if ($a[0] + $a[1] == $b[0] + $b[1]) {
+        if (
+            ($a[0] == $b[0] && abs($a[1] - $b[1]) == 1) ||
+            ($a[1] == $b[1] && abs($a[0] - $b[0]) == 1) ||
+            ($a[0] + $a[1] == $b[0] + $b[1])
+        ) {
             return true;
         }
         return false;
@@ -130,21 +129,11 @@ class Board
                 $common[] = $p . "," . $q;
             }
         }
-        if (
-            !isset($this->board[$common[0]]) &&
-            !isset($this->board[$common[1]]) &&
-            !isset($this->board[$from]) &&
-            !isset($this->board[$to])
-        ) {
+        if (count($this->board) == 2 && $this->emptyTile($common[0]) && $this->emptyTile($common[0]))
+        {
             return false;
         }
-        return min(
-                $this->len($this->board[$common[0]] ?? []),
-                $this->len($this->board[$common[1]] ?? [])
-            ) <= max(
-                $this->len($this->board[$from] ?? []),
-                $this->len($this->board[$to] ?? [])
-            );
+        return true;
     }
 
 
