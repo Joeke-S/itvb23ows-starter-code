@@ -10,21 +10,18 @@ class GrasshopperTest extends TestCase
 
     public function testGetToken()
     {
-        $playerMock = new Player("player 0");
-
-        $grasHopper = new Grasshopper($playerMock);
+        $grasHopper = new Grasshopper();
         self::assertSame("G", $grasHopper->getToken());
 
     }
 
     public function testHopOneStep(){
-        $playerMock = new Player("player 0");
         $board = [];
 
-        $grasshopper = new Grasshopper($playerMock);
+        $grasshopper = new Grasshopper();
         $board["0,0"] = $grasshopper->getToken();
 
-        $canMove = $grasshopper->canMoveTo($board, $playerMock, 0, 0, 0, 1);
+        $canMove = $grasshopper->canMoveTo($board, 0, 0, 0, 0, 1);
 
         self::assertFalse($canMove);
 
@@ -32,13 +29,12 @@ class GrasshopperTest extends TestCase
 
     public function testCanMoveToSelf()
     {
-        $playerMock = new Player("player 0");
         $board = [];
 
-        $grasshopper = new Grasshopper($playerMock);
+        $grasshopper = new Grasshopper();
         $board["0,0"] = $grasshopper->getToken();
 
-        $canMove = $grasshopper->canMoveTo($board, $playerMock, 0, 0, 0, 0);
+        $canMove = $grasshopper->canMoveTo($board, 0, 0, 0, 0, 0);
 
         self::assertFalse($canMove);
     }

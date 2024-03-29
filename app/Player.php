@@ -15,64 +15,72 @@ class Player
 {
     private array $pieces;
 
-    private string $name;
+    private int $name;
 
-    private int $moveCount;
 
-    public function __construct(string $name, array $pieces = null)
+    public function __construct(int $name, array $pieces = null)
     {
-        if ($pieces){
-            $this->createHand($pieces);
-        } else {
-            $this->pieces = self::starterPieces($this);
-        }
         $this->name = $name;
-        $this->moveCount = 0;
+        if ($pieces != null){
+            $this->createHand($pieces);
+            return;
+        }
+        $this->pieces = array(
+            new Queen(),
+            new Beetle(),
+            new Beetle(),
+            new Spider(),
+            new Spider(),
+            new Ant(),
+            new Ant(),
+            new Ant(),
+            new Grasshopper(),
+            new Grasshopper(),
+            new Grasshopper()
+        );
+
     }
 
-    private function createHand(array $pieces)
+    private function createHand(array $pieces): void
     {
         foreach($pieces as $piece) {
             switch ($piece) {
                 case 'Q':
-                    $this->pieces[] = new Queen($this);
+                    $this->pieces[] = new Queen();
                     break;
                 case 'B':
-                    $this->pieces[] = new Beetle($this);
+                    $this->pieces[] = new Beetle();
                     break;
                 case 'S':
-                    $this->pieces[] = new Spider($this);
+                    $this->pieces[] = new Spider();
                     break;
                 case 'A':
-                    $this->pieces[] = new Ant($this);
+                    $this->pieces[] = new Ant();
                     break;
                 case 'G':
-                    $this->pieces[] = new Grasshopper($this);
+                    $this->pieces[] = new Grasshopper();
                     break;
             }
         }
     }
 
-    private function starterPieces(Player $player): array
-    {
-        return array(
-            new Queen($player),
-            new Beetle($player),
-            new Beetle($player),
-            new Spider($player),
-            new Spider($player),
-            new Ant($player),
-            new Ant($player),
-            new Ant($player),
-            new Grasshopper($player),
-            new Grasshopper($player),
-            new Grasshopper($player),
-        );
-    }
+//    private function starterPieces(): array
+//    {
+//
+//    }
 
     public function getHand(): array
     {
         return $this->pieces;
+    }
+    public function getHandArr(): array
+    {
+        $handArray = array();
+        foreach ($this->pieces as $insect){
+
+            $handArray[] = $insect->getToken();
+        }
+        return $handArray;
     }
 
     public function pullPiece($pieceString): ?Insect
@@ -82,7 +90,7 @@ class Player
         for ($i = 0; $i < count($tiles); $i++) {
             $piece = $tiles[$i];
 
-            if ($piece->getMarker() != $pieceString) {
+            if ($piece->getToken() != $pieceString) {
                 continue;
             }
 
@@ -92,6 +100,38 @@ class Player
         }
 
         return null;
+    }
+    public function hasPiece($insect):bool{
+        foreach ($this->pieces as $handInsect){
+            switch ($insect){
+                case 'Q':
+                    if($handInsect instanceof Queen){
+                        return true;
+                    }
+                    break;
+                case 'B':
+                    if($handInsect instanceof Beetle){
+                        return true;
+                    }
+                    break;
+                case 'S':
+                    if($handInsect instanceof Spider){
+                        return true;
+                    }
+                    break;
+                case 'A':
+                    if($handInsect instanceof Ant){
+                        return true;
+                    }
+                    break;
+                case 'G':
+                    if($handInsect instanceof Grasshopper){
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
     }
 
     public function hasQueenInHand(): bool
@@ -105,21 +145,12 @@ class Player
         return false;
     }
 
-    public function getName(): string
+    public function getName(): int
     {
         return $this->name;
     }
 
-    public function incrementMoveCount()
-    {
-        $this->moveCount++;
-    }
-
-    public function getMoveCount(): int
-    {
-        return $this->moveCount;
-    }
-    public function getHandNames(): array
+    public function getHandTokens(): array
     {
         $handArray = array();
         foreach ($this->pieces as $piece){
@@ -136,9 +167,5 @@ class Player
         }
     }
 
-    public function setMoveCount(int $moveCount): void
-    {
-        $this->moveCount = $moveCount;
-    }
 
 }

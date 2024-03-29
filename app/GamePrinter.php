@@ -24,11 +24,12 @@ class GamePrinter
     }
 
     public function printHand($player){
-        foreach ($this->game->getHands()[$player]->gethand() as $tile => $ct) {
-            for ($i = 0; $i < $ct; $i++) {
-                echo '<div class="tile player'.$player.'"><span>'.$tile."</span></div> ";
-            }
+
+        foreach ($this->game->getOneOfPlayers($player)->getHand() as $ct) {
+            echo '<div class="tile player' . $player . '"><span>' . $ct->getToken() . "</span></div> ";
         }
+
+
     }
 
     public function printBoard(){
@@ -85,10 +86,14 @@ class GamePrinter
     }
 
     public function printPiecesAvailable(){
-        foreach ($this->game->getHandPlayer($this->game->getPlayer())->getHand() as $tile => $ct) {
-            if ($ct > 0) {
-                echo "<option value=\"$tile\">$tile</option>";
+        $vals = [];
+        foreach ($this->game->getOneOfPlayers($this->game->getPlayer())->getHand() as $ct) {
+            if (in_array($ct->getToken(), $vals)) {
+                continue;
             }
+            $val = $ct->getToken();
+            $vals[] = $val;
+            echo "<option value=\"$val\">$val</option>";
         }
     }
 }

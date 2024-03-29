@@ -19,9 +19,9 @@ try {
     $_SESSION['board'] = $game->getBoard()->toArray();
     $_SESSION['player'] = $game->getOtherPlayer();
     $_SESSION['last_move'] = $moveId;
-    $_SESSION['hand'] = array_map(function (PlayerHand $hand) {
-        return $hand->getHand();
-    }, $game->getHands());
+
+    $_SESSION['players'] = $game->getPlayers();
+    $_SESSION['hand'] = [0 => $game->getOneOfPlayers(0)->getHandTokens(), 1 => $game->getOneOfPlayers(1)->getHandTokens()];
 } catch (GameException $e) {
     $_SESSION['error'] = $e->getMessage();
 } finally {

@@ -3,7 +3,6 @@
 namespace app;
 
 session_start();
-
 include_once 'util.php';
 include_once 'HiveGame.php';
 include_once 'GamePrinter.php';
@@ -22,8 +21,6 @@ $gamePrinter = new GamePrinter($game);
 
 $WHITE = 0;
 $BLACK = 1;
-
-$to = $game->getMovesTo();
 
 
 ?>
