@@ -10,7 +10,7 @@ class Database
 
     function __construct()
     {
-        $connection = new mysqli('localhost', 'root', 'root', 'hive');
+        $connection = new mysqli('app-db', 'root', 'root', 'hive');
         if ($connection->connect_error) {
             die('Connect Error (' . $connection->connect_errno . ') ' . $connection->connect_error);
         }
