@@ -15,7 +15,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Set the PATH variable to include Composer's bin directory
 ENV PATH="/usr/local/bin/composer/vendor/bin:${PATH}"
-RUN composer install
-RUN composer require --dev phpunit/phpunit
+
 
 USER jenkins

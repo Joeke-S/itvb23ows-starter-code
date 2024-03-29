@@ -7,7 +7,12 @@ pipeline {
                 echo 'Building...'
             }
         }
-
+        stage('Install dependencies') {
+                            steps {
+                                sh 'composer install'
+                                sh 'composer require --dev phpunit/phpunit'
+                            }
+                        }
         stage('Test') {
             steps {
                 script {
