@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     echo 'Testing...'
-                    sh '/var/www/html/vendor/bin/phpunit /var/www/html/tests'
+                    sh 'vendor/bin/phpunit /var/www/html/tests'
                 }
             }
         }
